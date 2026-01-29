@@ -1,0 +1,1 @@
+[2026-01-29 16:42:02] ERROR: (0) Uncaught Exception RuntimeException: "No database name specified in config." at /var/www/html/application/Espo/Core/ORM/EntityManagerFactory.php line 165 :: /var/www/html/application/Espo/Core/ORM/EntityManagerFactory.php(165)

@@ -14,18 +14,18 @@ return [
   'recordsPerPageKanban' => 5,
   'applicationName' => 'EspoCRM',
   'version' => '9.2.7',
-  'timeZone' => 'UTC',
-  'dateFormat' => 'DD.MM.YYYY',
+  'timeZone' => 'Europe/Rome',
+  'dateFormat' => 'DD/MM/YYYY',
   'timeFormat' => 'HH:mm',
-  'weekStart' => 0,
-  'thousandSeparator' => ',',
-  'decimalMark' => '.',
+  'weekStart' => 1,
+  'thousandSeparator' => '',
+  'decimalMark' => ',',
   'exportDelimiter' => ',',
   'currencyList' => [
-    0 => 'USD'
+    0 => 'EUR'
   ],
-  'defaultCurrency' => 'USD',
-  'baseCurrency' => 'USD',
+  'defaultCurrency' => 'EUR',
+  'baseCurrency' => 'EUR',
   'currencyRates' => [],
   'currencyNoJoinMode' => false,
   'outboundEmailIsShared' => false,
@@ -328,6 +328,9 @@ return [
     0 => 'youtube.com',
     1 => 'google.com'
   ],
-  'cacheTimestamp' => 1769644486,
-  'microtime' => 1769644486.070042
+  'cacheTimestamp' => 1769704970,
+  'microtime' => 1769704970.89475,
+  'siteUrl' => 'https://espocrm.ddev.site',
+  'fullTextSearchMinLength' => 4,
+  'appTimestamp' => 1769704933
 ];
