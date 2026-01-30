@@ -1,0 +1,12 @@
+# EspoCRM Local Configs
+/data/config.php
+/data/config-internal.php
+/data/cache/
+/data/logs/
+/data/upload/
+/data/.backup/
+/data/tmp/
+
+# DDEV Automation
+/.ddev/.espo-initialized
+/.ddev/.downloads/
