@@ -1,11 +1,33 @@
-# EspoCRM Local Configs
+# ====== DATA DIRECTORY ======
+# Config files (TRACKED in this version for stability, ignored in future)
 /data/config.php
 /data/config-internal.php
-/data/cache/
-/data/logs/
-/data/upload/
-/data/.backup/
-/data/tmp/
+/data/config-override.php
+/data/config-internal-override.php
+
+# Track Templates
+!/data/config.php.dist
+!/data/config-internal.php.dist
+
+# Cache and Temporary Files
+/data/logs/*
+!/data/logs/.gitkeep
+/data/cache/*
+!/data/cache/.gitkeep
+/data/upload/*
+!/data/upload/.gitkeep
+/data/preferences/*
+!/data/preferences/.gitkeep
+/data/.backup/*
+/data/tmp/*
+
+# Generated files
+/build
+/node_modules
+/vendor
+/custom/Espo/Custom/*
+!/custom/Espo/Custom/.htaccess
+/install/config.php
 
 # DDEV Automation
 /.ddev/.espo-initialized
