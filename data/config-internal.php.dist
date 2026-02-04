@@ -1,0 +1,12 @@
+<?php
+return [
+  'isInstalled' => true,
+  'database' => [
+    'driver' => 'pdo_mysql',
+    'host' => 'db',
+    'port' => '3306',
+    'dbname' => 'db',
+    'user' => 'db',
+    'password' => 'db',
+  ],
+];
