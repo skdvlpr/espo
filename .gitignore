@@ -25,8 +25,9 @@
 /build
 /node_modules
 /vendor
-/custom/Espo/Custom/*
-!/custom/Espo/Custom/.htaccess
+# Customizations (TRACKED)
+!/custom/Espo/Custom/
+/custom/Espo/Custom/.htaccess
 /install/config.php
 
 # DDEV Automation
