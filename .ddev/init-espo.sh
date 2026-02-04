@@ -1,24 +1,44 @@
 #!/bin/bash
+set -e
 
-# EspoCRM Initialization Script for Team Development
+# EspoCRM Initialization Script
+# Automatically provisions config files from templates and handles first-run setup.
 
-CONFIG_FILE="data/config-internal.php"
 INSTALL_FLAG=".ddev/.espo-initialized"
-# Default admin credentials
 ADMIN_USER="admin"
 ADMIN_PASS="toor"
 
 echo "🚀 Starting EspoCRM Initialization..."
 
-# Check if we need to run first-time setup
-NEED_SETUP=false
+# 0. Ensure Directory Structure
+# Essential for a fresh clone where empty dirs might be missing despite .gitkeep
+mkdir -p data/cache data/logs data/upload data/preferences data/.backup data/tmp custom/Espo/Custom
 
-# 1. Create DB Config
-if [ ! -f "$CONFIG_FILE" ]; then
-    echo "📝 Creating database configuration..."
-    cat > "$CONFIG_FILE" << 'EOFCONFIG'
+# 1. Auto-Provision Configuration Files
+# If config files are missing (e.g., fresh clone), create them from templates.
+
+if [ ! -f "data/config.php" ]; then
+    if [ -f "data/config.php.dist" ]; then
+        echo "📝 Creating data/config.php from template..."
+        cp data/config.php.dist data/config.php
+    else 
+        echo "⚠️  Template data/config.php.dist not found. Creating minimal default."
+        echo "<?php return ['useCache' => true];" > data/config.php
+    fi
+     # Mark that we need a setup/rebuild because we just created a config
+    NEED_SETUP=true
+fi
+
+if [ ! -f "data/config-internal.php" ]; then
+    if [ -f "data/config-internal.php.dist" ]; then
+        echo "📝 Creating data/config-internal.php from template..."
+        cp data/config-internal.php.dist data/config-internal.php
+    else
+        echo "⚠️  Template data/config-internal.php.dist not found. Creating default internal config."
+        cat > "data/config-internal.php" << 'EOFCONFIG'
 <?php
 return [
+  'isInstalled' => true,
   'database' => [
     'driver' => 'pdo_mysql',
     'host' => 'db',
@@ -29,17 +49,24 @@ return [
   ],
 ];
 EOFCONFIG
-    chmod 644 "$CONFIG_FILE"
+    fi
     NEED_SETUP=true
 fi
 
-# 2. Check Database & Import
-# Wait for DB to be ready
+# 2. Set Permissions (Vital for DDEV/Docker)
+# We do this EARLY to prevent permission errors during cache clearing or rebuild
+echo "🔐 Verifying permissions..."
+chmod 664 data/config.php data/config-internal.php 2>/dev/null || true
+find data/ custom/ client/custom/ -type d -exec chmod 775 {} \; 2>/dev/null || true
+find data/ custom/ client/custom/ -type f -exec chmod 664 {} \; 2>/dev/null || true
+
+# 3. Check Database Connection
 echo "⏳ Waiting for database..."
 while ! mysqladmin ping -h db --silent; do
     sleep 1
 done
 
+# 4. Import Data if Empty
 DB_EXISTS=$(mysql -h db -u db -pdb -e "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema='db';" 2>/dev/null | tail -n1)
 
 if [ "$DB_EXISTS" = "0" ] || [ -z "$DB_EXISTS" ]; then
@@ -56,45 +83,35 @@ if [ "$DB_EXISTS" = "0" ] || [ -z "$DB_EXISTS" ]; then
     else
         echo "⚠️  No initial database dump found. Skipping import."
     fi
-else 
-    echo "✓ Database already contains data ($DB_EXISTS tables). Skipping import."
 fi
 
-# Check if previously initialized (flag file)
+# 5. Handling Setup / Rebuild
+# Check flag file to see if we've already initialized this specific environment
 if [ ! -f "$INSTALL_FLAG" ]; then
     NEED_SETUP=true
 fi
 
-# 3. Operations requiring Rebuild (Only if Setup needed)
 if [ "$NEED_SETUP" = "true" ]; then
     echo "⚙️  Running setup tasks..."
 
+    # ALWAYS clear cache before rebuild to avoid stale cache errors
     echo "🧹 Clearing cache..."
     rm -rf data/cache/*
+    touch data/cache/.gitkeep # Keep git properties happy
 
     echo "🔨 Rebuilding EspoCRM..."
+    # Capture output to check for errors, but also display it
     php rebuild.php
 
-    # 4. Create Admin User
-    if [ $? -eq 0 ]; then
-        echo "👤 Ensuring admin user exists..."
-        # Try to create user, ignore error if exists
-        php bin/command create-admin-user "$ADMIN_USER" 2>/dev/null || true
-        # Force password set
-        echo "$ADMIN_PASS" | php bin/command set-password "$ADMIN_USER"
-        echo "✓ Admin credentials ensured."
-    fi
+    # Create admin user if not exists
+    echo "👤 Ensuring admin user exists..."
+    php bin/command create-admin-user "$ADMIN_USER" 2>/dev/null || true
+    echo "$ADMIN_PASS" | php bin/command set-password "$ADMIN_USER"
     
-    # Create the flag file
+    # Mark initialization as done
     touch "$INSTALL_FLAG"
 else
     echo "✓ System already initialized. Skipping rebuild."
 fi
 
-# 5. Set Permissions (Always run this to be safe)
-echo "🔐 Verifying permissions..."
-chown -R www-data:www-data data/ custom/ client/custom/
-find data/ custom/ client/custom/ -type d -exec chmod 775 {} \;
-find data/ custom/ client/custom/ -type f -exec chmod 664 {} \;
-
-echo "✅ Initialization check complete!"
+echo "✅ Initialization complete!"
