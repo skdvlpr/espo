@@ -1,0 +1,5 @@
+{
+    "csvLeadImportScheduledJobExists": {
+        "className": "Espo\\Custom\\Classes\\AppParams\\CsvLeadImportScheduledJobCheck"
+    }
+}
