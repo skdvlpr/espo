@@ -1,0 +1,8 @@
+{
+    "CsvLeadImport": {
+        "saveHooks": [
+            "__APPEND__",
+            "Espo\\Custom\\Hooks\\CsvLeadImport\\EnsureScheduledJob"
+        ]
+    }
+}

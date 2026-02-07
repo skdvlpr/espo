@@ -1,0 +1,50 @@
+{
+    "labels": {
+        "Create CsvLeadImport": "Создать импорт CSV",
+        "Run Import Now": "Запустить импорт",
+        "Reset Counter": "Сбросить счётчик"
+    },
+    "fields": {
+        "name": "Название",
+        "csvUrl": "URL CSV файла",
+        "isActive": "Активен",
+        "lastProcessedRow": "Последняя обработанная строка",
+        "lastRunAt": "Последний запуск",
+        "lastError": "Последняя ошибка",
+        "leadsImportedCount": "Импортировано лидов",
+        "firstRowIsHeader": "Первая строка — заголовок",
+        "fieldMapping": "Маппинг полей",
+        "defaultFieldMapping": "Использовать стандартный маппинг",
+        "assignedUser": "Ответственный",
+        "team": "Команда",
+        "leadSource": "Источник лида",
+        "skipDuplicates": "Пропускать дубликаты",
+        "duplicateCheckFields": "Поля проверки дубликатов",
+        "description": "Описание"
+    },
+    "links": {
+        "assignedUser": "Ответственный",
+        "team": "Команда"
+    },
+    "tooltips": {
+        "csvUrl": "URL публично доступного CSV файла. Для Google Sheets: Файл → Опубликовать → CSV. Пример: https://docs.google.com/spreadsheets/d/{ID}/export?format=csv",
+        "fieldMapping": "JSON объект с маппингом колонок CSV на поля Lead. Пример: {\"first_name\": \"firstName\", \"email\": \"emailAddress\"}",
+        "defaultFieldMapping": "Если включено, стандартные названия колонок (firstName, email, phone и т.д.) будут автоматически маппиться на поля Lead.",
+        "skipDuplicates": "Если включено, лиды с совпадающим email/телефоном не будут созданы."
+    },
+    "options": {
+        "duplicateCheckFields": {
+            "emailAddress": "Email",
+            "phoneNumber": "Телефон",
+            "name": "Имя"
+        }
+    },
+    "messages": {
+        "Are you sure you want to run the import now?": "Вы уверены, что хотите запустить импорт сейчас?",
+        "Are you sure you want to reset the counter?": "Вы уверены, что хотите сбросить счётчик? Это приведёт к повторному импорту всех строк с начала.",
+        "Import completed": "Импорт завершён",
+        "leads imported": "лидов импортировано",
+        "Counter has been reset": "Счётчик сброшен",
+        "total": "всего"
+    }
+}

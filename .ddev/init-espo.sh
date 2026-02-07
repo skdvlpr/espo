@@ -107,6 +107,14 @@ if [ "$NEED_SETUP" = "true" ]; then
     echo "👤 Ensuring admin user exists..."
     php bin/command create-admin-user "$ADMIN_USER" 2>/dev/null || true
     echo "$ADMIN_PASS" | php bin/command set-password "$ADMIN_USER"
+
+    # Ensure CSV Lead Import scheduled job exists
+    echo "📅 Ensuring scheduled jobs exist..."
+    SCHEDULED_JOB_EXISTS=$(mysql -h db -u db -pdb db -N -e "SELECT COUNT(*) FROM scheduled_job WHERE job = 'ImportLeadsFromCsv' AND deleted = 0;" 2>/dev/null || echo "0")
+    if [ "$SCHEDULED_JOB_EXISTS" = "0" ]; then
+        echo "   Creating 'Import Leads from CSV' scheduled job..."
+        mysql -h db -u db -pdb db -e "INSERT INTO scheduled_job (id, name, job, status, scheduling, created_at, modified_at, deleted) VALUES (CONCAT('csv_import_', UNIX_TIMESTAMP()), 'Import Leads from CSV', 'ImportLeadsFromCsv', 'Active', '*/5 * * * *', NOW(), NOW(), 0);" 2>/dev/null || true
+    fi
     
     # Mark initialization as done
     touch "$INSTALL_FLAG"
